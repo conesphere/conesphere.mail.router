@@ -1,0 +1,27 @@
+#derived from $OpenBSD: smtpd.conf,v 1.11 2018/06/04 21:10:58 jmc Exp $
+
+# This smtpds only task is to receive mail from the spamfilters and 
+# route it per domain to their specific mailservers via smtp
+
+smtp max-message-size 200M
+
+table credentials file:/etc/mail/credentials
+
+# To accept external mail, replace with: listen on all
+listen on lo0
+listen on {{ ansible_default_ipv4.device }} port 25 
+
+{% for user in mail_relay_config %}
+table {{ user }} file:/etc/mail/{{ user }}.domains
+{% if mail_relay_config[user].delivery_password is defined %}
+action "{{ user }}" relay tls no-verify host "{{ mail_relay_config[user].delivery_url }}" auth <credentials>
+{% else %} 
+action "{{ user }}" relay tls no-verify host "{{ mail_relay_config[user].delivery_url }}"
+{% endif %}
+match from any for domain <{{ user }}> action "{{ user }}"
+{% endfor %}
+
+# we should not have any local mail bit just in case 
+action "relay" relay
+match from local for any action "relay"
+

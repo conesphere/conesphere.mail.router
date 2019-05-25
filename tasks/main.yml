@@ -1,0 +1,24 @@
+---
+- template:
+    src: domains.table.j2
+    dest: "/etc/mail/{{ item.key }}.domains"
+    mode: "0640"
+    owner: root
+    group: wheel
+  notify: restart_smtpd
+  with_dict: "{{ mail_relay_config }}"
+- template:
+    src: credentials.table.j2
+    dest: /etc/mail/credentials
+    mode: "0640"
+    owner: root
+    group: wheel
+  notify: restart_smtpd
+- template:
+    src: smtpd.conf.j2
+    dest: /etc/mail/smtpd.conf
+    mode: "0644"
+    owner: root
+    group: wheel
+  notify: restart_smtpd
+

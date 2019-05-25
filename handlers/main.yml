@@ -1,0 +1,14 @@
+---
+# handlers file for conesphere.mail.inbound
+- name: restart_smtpd
+  service:
+    name: smtpd
+    enabled: yes
+    state: restarted
+- name: restart_spamd
+  service:
+    name: spamd
+    enabled: yes
+    state: restarted
+- name: reload_pfctl
+  shell: pfctl -f /etc/pf.conf
