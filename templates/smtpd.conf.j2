@@ -6,6 +6,7 @@
 smtp max-message-size 200M
 
 table credentials file:/etc/mail/credentials
+table outbound_credentials file:/etc/mail/outbound_credentials
 
 # To accept external mail, replace with: listen on all
 listen on lo0
@@ -22,6 +23,16 @@ match from any for domain <{{ user }}> action "{{ user }}"
 {% endfor %}
 
 # we should not have any local mail bit just in case 
-action "relay" relay
+{% for user in mail_outbound_config %}
+table outbound_{{ user }} file:/etc/mail/outbound_{{ user }}.domains
+{% if mail_outbound_config[user].delivery_password is defined %}
+action "outbound_{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" tls no-verify host "{{ mail_outbound_config[user].delivery_url }}" auth <outbound_credentials>
+{% else %} 
+action "{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" tls no-verify host "{{ mail_outbound_config[user].delivery_url }}"
+{% endif %}
+match from any for domain <outbound_{{ user }}> action "outbound_{{ user }}"
+{% endfor %}
+
+action "relay" relay helo "{{ mail_helo|default(mail_domain) }}"
 match from local for any action "relay"
 
