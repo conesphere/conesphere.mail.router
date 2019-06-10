@@ -30,9 +30,11 @@ action "outbound_{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" t
 {% else %} 
 action "{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" tls no-verify host "{{ mail_outbound_config[user].delivery_url }}"
 {% endif %}
-match from any for domain <outbound_{{ user }}> action "outbound_{{ user }}"
+match from local for domain <outbound_{{ user }}> action "outbound_{{ user }}"
+match from any auth for domain <outbound_{{ user }}> action "outbound_{{ user }}"
 {% endfor %}
 
 action "relay" relay helo "{{ mail_helo|default(mail_domain) }}"
 match from local for any action "relay"
+match from any auth for any action "relay"
 
