@@ -34,6 +34,12 @@ match from local for domain <outbound_{{ user }}> action "outbound_{{ user }}"
 match from any auth for domain <outbound_{{ user }}> action "outbound_{{ user }}"
 {% endfor %}
 
+{% if alerts_email_address is defined %}
+action "local" maildir virtual {"@"="{{ alerts_email_address }}"}
+match from local for local action "local"
+match from any auth for local action "local"
+{% endif %}
+
 action "relay" relay helo "{{ mail_helo|default(mail_domain) }}"
 match from local for any action "relay"
 match from any auth for any action "relay"
