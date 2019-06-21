@@ -36,4 +36,17 @@
     owner: root
     group: wheel
   notify: restart_smtpd
+- name: install chk_smtpd_mqueue.sh
+  template:
+    src: chk_smtpd_mqueue.sh.j2
+    dest: /root/chk_smtpd_mqueue.sh
+    mode: "0755"
+    owner: root
+    group: wheel
+- name: enable mailq check
+  cron:
+    name: SMTPD_MQUEUE_CHECK
+    minute: 23
+    user: root
+    job: '/root/chk_smtpd_mqueue.sh'
 

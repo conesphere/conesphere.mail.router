@@ -1,0 +1,11 @@
+#!/bin/ksh
+find  /var/spool/smtpd/queue/ -type f -name message -mmin +60 | (
+	while read message
+	do
+		#echo "${message} is stuck for more than 60 minutes."
+		dname="${message%/message}"
+		qname="${dname##*/}"
+		echo ${dname}/${qname}* is stuck for more than 60 minutes:
+		cat ${dname}/${qname}*
+	done
+)
