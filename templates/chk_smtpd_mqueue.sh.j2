@@ -5,7 +5,10 @@ find  /var/spool/smtpd/queue/ -type f -name message -mmin +60 | (
 		#echo "${message} is stuck for more than 60 minutes."
 		dname="${message%/message}"
 		qname="${dname##*/}"
-		echo ${dname}/${qname}* is stuck for more than 60 minutes:
-		cat ${dname}/${qname}*
+		if [ ! -f "/root/nochk/${qname}" ]
+		then
+			echo ${dname}/${qname}* is stuck for more than 60 minutes:
+			cat ${dname}/${qname}*
+		fi
 	done
 )
