@@ -3,7 +3,7 @@
 # This smtpds only task is to receive mail from the spamfilters and 
 # route it per domain to their specific mailservers via smtp
 
-smtp max-message-size 200M
+smtp max-message-size {{ smtpd_max_message_size }}
 
 table credentials file:/etc/mail/credentials
 table outbound_credentials file:/etc/mail/outbound_credentials

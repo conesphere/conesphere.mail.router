@@ -9,3 +9,6 @@ mail_relay_shadow: '{{ mail_relay_config }}'
 # credentials from mail_outbound_config into an ansible-vault
 mail_outbound_shadow: '{{ mail_outbound_config }}'
 
+# this variable configures the maximum message size allowed in smtpd 
+smtpd_max_message_size: 200M
+
