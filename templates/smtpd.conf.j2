@@ -14,7 +14,7 @@ listen on {{ ansible_default_ipv4.device }} port 25
 
 {% for user in mail_relay_config %}
 table {{ user }} file:/etc/mail/{{ user }}.domains
-{% if mail_relay_config[user].delivery_password is defined %}
+{% if mail_relay_shadow[user].delivery_password is defined %}
 action "{{ user }}" relay tls no-verify host "{{ mail_relay_config[user].delivery_url }}" auth <credentials>
 {% else %} 
 action "{{ user }}" relay tls no-verify host "{{ mail_relay_config[user].delivery_url }}"
@@ -25,7 +25,7 @@ match from any for domain <{{ user }}> action "{{ user }}"
 # we should not have any local mail bit just in case 
 {% for user in mail_outbound_config %}
 table outbound_{{ user }} file:/etc/mail/outbound_{{ user }}.domains
-{% if mail_outbound_config[user].delivery_password is defined %}
+{% if mail_outbound_shadow[user].delivery_password is defined %}
 action "outbound_{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" tls no-verify host "{{ mail_outbound_config[user].delivery_url }}" auth <outbound_credentials>
 {% else %} 
 action "{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" tls no-verify host "{{ mail_outbound_config[user].delivery_url }}"

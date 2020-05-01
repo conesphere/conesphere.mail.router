@@ -1,2 +1,11 @@
 ---
 # defaults file for conesphere.mail.inbound
+
+# the mail_relay_shadow is to provide the option to put
+# credentials from mail_relay_config into an ansible-vault
+mail_relay_shadow: '{{ mail_relay_config }}'
+
+# the mail_outbound_shadow is to provide the option to put
+# credentials from mail_outbound_config into an ansible-vault
+mail_outbound_shadow: '{{ mail_outbound_config }}'
+
